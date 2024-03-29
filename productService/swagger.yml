@@ -1,0 +1,47 @@
+
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'Product Service'
+  description: 'A service to manage products'
+paths:
+  /products:
+    get:
+      summary: 'Get list of products'
+      operationId: 'getProductsList'
+      responses:
+        '200':
+          description: 'List of products'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/definitions/Product'
+  /product/{id}:
+    get:
+      summary: 'Get product detail'
+      operationId: 'getProductById'
+      parameters:
+        - name: 'id'
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 'Product detail'
+          schema:
+            $ref: '#/definitions/Product'
+        '404':
+          description: 'Product not found'
+
+definitions:
+  Product:
+    type: 'object'
+    properties:
+      id:
+        type: 'string'
+      title:
+        type: 'string'
+      description:
+        type: 'string'
+      price:
+        type: 'number'
