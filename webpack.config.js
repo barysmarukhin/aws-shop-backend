@@ -5,7 +5,7 @@ module.exports = {
   mode: serverlessWebpack.lib.webpack.isLocal ? 'development' : 'production',
   entry: serverlessWebpack.lib.entries,
   resolve: {
-    extensions: ['.ts'],
+    extensions: ['.ts', '.js'],
   },
   target: 'node',
   module: {

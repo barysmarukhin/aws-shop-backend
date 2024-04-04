@@ -3,7 +3,9 @@ service: my-store-app-backend
 frameworkVersion: "3"
 
 plugins:
+  - serverless-auto-swagger
   - serverless-webpack
+  - serverless-offline
 
 provider:
   name: aws
@@ -20,14 +22,21 @@ functions:
       - httpApi:
           path: /products
           method: get
+          swaggerTags: ['Products']
   getProductById:
     handler: productService/getProductById.handler
     events:
       - httpApi:
           path: /products/{productId}
           method: get
+          swaggerTags: ['Products']
 
 custom:
+  autoswagger:
+    title: 'product-service'
+    useStage: true
+    basePath: '/dev'
+    typefiles: ['./productService/models.ts']
   webpack:
     webpackConfig: 'webpack.config.js'
     includeModules: false

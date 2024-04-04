@@ -5,6 +5,7 @@ jspm_packages
 
 # Serverless directories
 .serverless
+swagger
 
 # Webpack directories
 .webpack
