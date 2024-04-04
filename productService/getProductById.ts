@@ -1,19 +1,26 @@
-import { productsListMock } from './productsList.mock';
+import ProductsService from './service/ProductService';
 import { APIGatewayEvent } from 'aws-lambda';
 
 export const handler = async (event: APIGatewayEvent) => {
-  const productId = event.pathParameters.productId;
-  const product = productsListMock.find(p => p.id == productId);
+  try {
+    const { productId } = event.pathParameters;
+    const productFound = await ProductsService.getById(productId);
 
-  if (!product){
     return {
-      statusCode: 404,
-      body: JSON.stringify({ message: 'Product not found' }),
+      statusCode: 200,
+      body: JSON.stringify(productFound),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
+  } catch (e) {
+    return {
+      statusCode: e.statusCode,
+      message: e.name,
+      body: 'Product not found',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
     };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(product),
-  };
 };

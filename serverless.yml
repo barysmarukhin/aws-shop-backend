@@ -21,7 +21,7 @@ functions:
           path: /products
           method: get
   getProductById:
-    handler: productService/getProductsList.handler
+    handler: productService/getProductById.handler
     events:
       - httpApi:
           path: /products/{productId}
