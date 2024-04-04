@@ -1,6 +1,7 @@
 import { productsListMock } from './productsList.mock';
+import { APIGatewayEvent } from 'aws-lambda';
 
-export const handler = async event => {
+export const handler = async (event: APIGatewayEvent) => {
   const productId = event.pathParameters.productId;
   const product = productsListMock.find(p => p.id == productId);
 

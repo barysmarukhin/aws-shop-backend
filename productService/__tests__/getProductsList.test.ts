@@ -1,4 +1,4 @@
-const { getProductsList } = require( '../getProductsList')
+import { handler as getProductsList } from '../getProductsList';
 import { productsListMock } from '../productsList.mock';
 
 describe('getProductsList', () => {
