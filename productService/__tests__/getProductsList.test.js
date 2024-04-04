@@ -1,5 +1,5 @@
 const { getProductsList } = require( '../getProductsList')
-import { productsListMock } from '../productsListMock';
+import { productsListMock } from '../productsList.mock';
 
 describe('getProductsList', () => {
   test('getProductsList should return array of products', async () => {

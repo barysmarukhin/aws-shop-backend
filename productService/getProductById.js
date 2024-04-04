@@ -1,6 +1,6 @@
-import { productsListMock } from './productsListMock';
+import { productsListMock } from './productsList.mock';
 
-export const getProductById = async event => {
+export const handler = async event => {
   const productId = event.pathParameters.productId;
   const product = productsListMock.find(p => p.id == productId);
 

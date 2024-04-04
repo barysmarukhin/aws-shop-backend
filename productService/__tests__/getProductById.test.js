@@ -1,5 +1,5 @@
 import { getProductById } from '../getProductById';
-import { productsListMock } from '../productsListMock';
+import { productsListMock } from '../productsList.mock';
 
 describe('getProductById', () => {
   test('getProductById should return product data if product exists', async () => {
