@@ -1,10 +1,10 @@
-import ProductsService from './service/ProductService';
+import { Product } from './services';
 import { APIGatewayEvent } from 'aws-lambda';
 
 export const handler = async (event: APIGatewayEvent) => {
   try {
     const { productId } = event.pathParameters;
-    const productFound = await ProductsService.getById(productId);
+    const productFound = await Product.getById(productId);
 
     return {
       statusCode: 200,
