@@ -15,6 +15,8 @@ provider:
   httpApi:
     cors: true
 
+configValidationMode: error
+
 functions:
   getProductsList:
     handler: productService/getProductsList.handler
@@ -29,6 +31,13 @@ functions:
       - httpApi:
           path: /products/{productId}
           method: get
+          swaggerTags: ['Products']
+  createProduct:
+    handler: productService/createProduct.handler
+    events:
+      - httpApi:
+          path: /products
+          method: post
           swaggerTags: ['Products']
 
 custom:
