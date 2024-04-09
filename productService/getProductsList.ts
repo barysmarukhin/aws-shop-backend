@@ -1,6 +1,7 @@
 import ProductsService from './services/Product';
 import { APIGatewayEvent } from 'aws-lambda';
 import logger from './logger';
+import { ApiError } from './errors';
 
 export const handler = async (event: APIGatewayEvent) => {
   try {
@@ -16,9 +17,11 @@ export const handler = async (event: APIGatewayEvent) => {
     };
   } catch (e) {
     console.log(e);
+    const { statusCode, name: message } = e as ApiError ;
+
     return {
-      statusCode: e.statusCode,
-      message: e.name,
+      statusCode,
+      message,
       headers: {
         'Access-Control-Allow-Origin': '*',
       },

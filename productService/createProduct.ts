@@ -1,13 +1,14 @@
 import { APIGatewayEvent, Handler } from 'aws-lambda';
 import { Product as ProductService } from './services';
-import { Product } from './models';
+import { Product } from './types';
 import logger from './logger';
+import { ApiError } from './errors';
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
     try {
         logger('createProduct', event);
 
-        const product: Product = JSON.parse(event.body);
+        const product: Product = JSON.parse(event.body as string);
         const productCreated = await ProductService.createOne(product);
 
         return {
@@ -18,11 +19,13 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
             },
         };
     } catch (e) {
+        const { statusCode = 500, name } = e as ApiError ;
+
         return {
             body: {
-                error: e.name,
+                error: name,
             },
-            statusCode: e.statusCode,
+            statusCode: statusCode,
             headers: {
                 'Access-Control-Allow-Origin': '*',
             },

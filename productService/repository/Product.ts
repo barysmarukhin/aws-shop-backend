@@ -1,7 +1,7 @@
 import db from './db';
 import { ProductRaw } from './types';
-import { Product } from '../models';
-import { InternalServerError } from '../errors';
+import { Product } from '../types';
+import { ApiError, InternalServerError } from '../errors';
 
 const getAll = async (): Promise<Product[]> => {
     const client = await db();
@@ -56,7 +56,6 @@ const createOne = async (product: Omit<Product, 'id' | 'stock'>): Promise<Produc
                 RETURNING *
         `);
 
-        console.log({ CREATED_ROWS: rows });
         return rows[0] as Product;
     } catch (e) {
         throw new InternalServerError(e.message);
