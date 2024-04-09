@@ -1,7 +1,5 @@
 const path = require('path');
-const dotenv = require('dotenv');
 const serverlessWebpack = require('serverless-webpack');
-const { DefinePlugin } = require('webpack');
 
 module.exports = {
   mode: serverlessWebpack.lib.webpack.isLocal ? 'development' : 'production',
@@ -23,13 +21,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new DefinePlugin({
-      'process.env': JSON.stringify(
-        dotenv.config({
-          path: path.resolve(__dirname, '.env'),
-        }).parsed,
-      ),
-    })
-  ],
 }
