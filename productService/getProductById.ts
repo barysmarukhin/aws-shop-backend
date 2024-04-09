@@ -1,8 +1,11 @@
 import { Product } from './services';
 import { APIGatewayEvent } from 'aws-lambda';
+import logger from './logger';
 
 export const handler = async (event: APIGatewayEvent) => {
   try {
+    logger('getProductsById', event);
+
     const { productId } = event.pathParameters;
     const productFound = await Product.getById(productId);
 

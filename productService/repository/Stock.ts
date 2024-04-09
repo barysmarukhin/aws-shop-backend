@@ -1,5 +1,6 @@
 import db from './db';
 import { StockRaw } from './types';
+import { InternalServerError } from '../errors';
 
 const createOne = async (stock: StockRaw): Promise<StockRaw> => {
     const client = await db();
@@ -19,6 +20,7 @@ const createOne = async (stock: StockRaw): Promise<StockRaw> => {
 
         return rows[0];
     } catch (e) {
+        throw new InternalServerError(e.message);
     } finally {
         client.end();
     }

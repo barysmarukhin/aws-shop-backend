@@ -1,7 +1,10 @@
 import ProductsService from './services/Product';
+import { APIGatewayEvent } from 'aws-lambda';
+import logger from './logger';
 
-export const handler = async () => {
+export const handler = async (event: APIGatewayEvent) => {
   try {
+    logger('getProductsList', event);
     const products =  await ProductsService.getAll();
 
     return {
@@ -12,6 +15,13 @@ export const handler = async () => {
       },
     };
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
+    return {
+      statusCode: e.statusCode,
+      message: e.name,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
   }
 };

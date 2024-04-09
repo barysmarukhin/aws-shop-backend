@@ -4,14 +4,22 @@ frameworkVersion: "3"
 
 plugins:
   - serverless-auto-swagger
-  - serverless-webpack
   - serverless-offline
+  - serverless-webpack
+
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
   profile: Delfin_admin
+  environment:
+    DB_USER: ${env:DB_USER}
+    DB_SERVER: ${env:DB_SERVER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_PORT: ${env:DB_PORT}
+    DB_DATABASE: ${env:DB_DATABASE}
   httpApi:
     cors: true
 
