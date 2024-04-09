@@ -12,11 +12,10 @@ const createOne = async (stock: StockRaw): Promise<StockRaw> => {
         } = stock;
 
         const { rows } = await client.query<StockRaw>(`
-        INSERT INTO stock
-            (product_id, count)
-        VALUES
-            (${product_id}, ${count})
-      `);
+            INSERT INTO stock (product_id, count)
+            VALUES ($1, $2)
+                RETURNING *
+        `, [product_id, count]);
 
         return rows[0];
     } catch (e) {

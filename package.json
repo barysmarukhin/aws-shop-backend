@@ -11,13 +11,16 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@tsconfig/node18": "^18.2.4",
     "@types/aws-lambda": "^8.10.136",
     "@types/jest": "^29.5.12",
+    "@types/lambda-tester": "^4.0.3",
     "@types/pg": "^8.11.4",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
+    "lambda-tester": "^4.0.1",
     "serverless-auto-swagger": "^2.12.0",
     "serverless-offline": "^13.3.3",
     "serverless-webpack": "^5.13.0",

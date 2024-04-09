@@ -1,6 +1,6 @@
 import { InvalidDataError, NotFoundError } from '../errors';
 import { Products } from '../repository';
-import { Product } from '../models';
+import { Product } from '../types';
 import Stock from './Stock';
 
 const getAll = async (): Promise<Product[]> => Products.getAll();

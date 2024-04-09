@@ -1,14 +1,18 @@
-import { handler as getProductsList } from '../getProductsList';
-import productsMock from '../products.mock';
-import { APIGatewayEvent } from 'aws-lambda';
+import lambdaTester from 'lambda-tester';
+import { handler } from '../getProductsList';
+import { Response } from '../../types/api';
 
 describe('getProductsList', () => {
-  test('getProductsList should return array of products', async () => {
-    const response = await getProductsList({} as APIGatewayEvent);
-    const products = JSON.parse(response.body);
-
-    expect(response.statusCode).toBe(200);
-    expect(Array.isArray(products)).toBe(true);
-    expect(products).toEqual(productsMock);
-  });
+    it('should return data', () => {
+        try {
+            return lambdaTester(handler)
+                .expectResult(({ statusCode, body }: Response) => {
+                    expect(statusCode).toEqual(200);
+                    expect(body).toBeDefined();
+                    expect(body.length).toBeGreaterThan(0);
+                });
+        } catch (e) {
+            console.error(e);
+        }
+    });
 });

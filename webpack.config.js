@@ -6,6 +6,9 @@ module.exports = {
   entry: serverlessWebpack.lib.entries,
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      'pg-native': path.resolve(__dirname, 'empty_module'),
+    },
   },
   target: 'node',
   module: {

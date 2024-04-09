@@ -27,3 +27,5 @@ export class InternalServerError extends Error {
         this.statusCode = statusCode;
     }
 }
+
+export type ApiError = InternalServerError | InvalidDataError | NotFoundError;
