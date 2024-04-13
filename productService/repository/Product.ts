@@ -1,7 +1,7 @@
 import db from './db';
 import { ProductRaw } from './types';
 import { Product } from '../types';
-import { ApiError, InternalServerError } from '../errors';
+import { InternalServerError } from '../../shared/errors';
 
 const getAll = async (): Promise<Product[]> => {
     const client = await db();

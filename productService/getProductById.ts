@@ -1,7 +1,7 @@
 import { Product } from './services';
 import { APIGatewayEvent } from 'aws-lambda';
-import logger from './logger';
-import { ApiError } from './errors';
+import logger from '../shared/logger';
+import { ApiError } from '../shared/errors';
 
 export const handler = async (event: APIGatewayEvent) => {
   try {

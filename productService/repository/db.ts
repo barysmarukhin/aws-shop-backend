@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { InternalServerError } from '../errors';
+import { InternalServerError } from '../../shared/errors';
 
 const {
     DB_USER,

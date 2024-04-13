@@ -1,7 +1,7 @@
 import ProductsService from './services/Product';
 import { APIGatewayEvent } from 'aws-lambda';
-import logger from './logger';
-import { ApiError } from './errors';
+import logger from '../shared/logger';
+import { ApiError } from '../shared/errors';
 
 export const handler = async (event: APIGatewayEvent) => {
   try {
@@ -16,7 +16,6 @@ export const handler = async (event: APIGatewayEvent) => {
       },
     };
   } catch (e) {
-    console.log(e);
     const { statusCode, name: message } = e as ApiError ;
 
     return {
