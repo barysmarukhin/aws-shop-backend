@@ -13,15 +13,25 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
-  profile: Delfin_admin
+  profile: ${env:AWS_PROFILE}
   environment:
     DB_USER: ${env:DB_USER}
     DB_SERVER: ${env:DB_SERVER}
     DB_PASSWORD: ${env:DB_PASSWORD}
     DB_PORT: ${env:DB_PORT}
     DB_DATABASE: ${env:DB_DATABASE}
+    AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
+    AWS_UPLOAD_BUCKET_CATALOG: ${env:AWS_UPLOAD_BUCKET_CATALOG}
   httpApi:
     cors: true
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action: 's3:ListBucket'
+      Resource:
+        - Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - ${env:AWS_UPLOAD_BUCKET}
 
 configValidationMode: error
 
@@ -47,6 +57,22 @@ functions:
           path: /products
           method: post
           swaggerTags: ['Products']
+  importProductsFile:
+    handler: importService/importProductsFile.handler
+    events:
+      - httpApi:
+          path: /import
+          method: GET
+  importFileParser:
+    handler: importService/importFileParser.handler
+    events:
+      - s3:
+          bucket: ${env:AWS_UPLOAD_BUCKET}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: ${env:AWS_UPLOAD_BUCKET_CATALOG}/
+            - suffix: .csv
+          existing: true
 
 custom:
   autoswagger:

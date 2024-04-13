@@ -1,6 +1,6 @@
 import db from './db';
 import { StockRaw } from './types';
-import { InternalServerError } from '../errors';
+import { InternalServerError } from '../../shared/errors';
 
 const createOne = async (stock: StockRaw): Promise<StockRaw> => {
     const client = await db();
