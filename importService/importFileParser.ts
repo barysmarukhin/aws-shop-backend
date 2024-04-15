@@ -1,9 +1,12 @@
 import { APIGatewayEvent, Handler } from 'aws-lambda';
 import logger from '../shared/logger';
+import { fileParser } from './services/fileParser';
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
   try {
     logger('importFileParser', event);
+
+    await fileParser();
 
     return {
       body: 'OK',

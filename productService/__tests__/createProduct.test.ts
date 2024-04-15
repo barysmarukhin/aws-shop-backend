@@ -46,23 +46,3 @@ describe('createProduct', () => {
         }
     });
 });
-
-export const format = (source: Record<string, unknown>, {
-    shouldTransformValuesToObject = false,
-    shouldSanitize = false,
-} = {}) => {
-    if (!shouldSanitize && !shouldTransformValuesToObject) return source;
-    // eslint-disable-next-line prefer-const
-    for (let key in source) {
-        if (typeof source[key] === 'object' && source[key] !== null) {
-            format(source[key] as Record<string, unknown>, { shouldTransformValuesToObject, shouldSanitize });
-        } else {
-            const value = shouldSanitize ? `${(source[key] as string).slice(0, 3)}**********` : source[key] as string;
-            source[key] = shouldTransformValuesToObject ? {
-                value,
-            } : value;
-        }
-    }
-
-    return source;
-};
