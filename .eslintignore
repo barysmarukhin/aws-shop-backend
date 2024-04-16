@@ -1,0 +1,4 @@
+node_modules
+jest.config.js
+cypress.config.ts
+webpack.config.js
