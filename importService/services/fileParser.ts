@@ -3,9 +3,14 @@ import csvParser from 'csv-parser';
 import { InternalServerError } from '../../shared/errors';
 
 const {
-  AWS_REGION, AWS_UPLOAD_BUCKET, AWS_UPLOAD_BUCKET_CATALOG, AWS_TARGET_BUCKET_CATALOG,
+  AWS_REGION,
+  AWS_UPLOAD_BUCKET,
+  AWS_UPLOAD_BUCKET_CATALOG,
+  AWS_TARGET_BUCKET_CATALOG,
+  SQS_QUEUE,
 } = process.env;
 const S3 = new awsSdk.S3({ region: AWS_REGION });
+const SQS = new awsSdk.SQS();
 
 export const fileParser = async () => {
   try {
@@ -30,39 +35,48 @@ export const fileParser = async () => {
           Key: key,
         };
 
-        console.log('ObjParams', objectParams);
+        S3.getObject(objectParams)
+          .createReadStream()
+          .pipe(csvParser())
+          .on('data', (data) => {
+            SQS.sendMessage(
+              {
+                QueueUrl: SQS_QUEUE,
+                MessageBody: JSON.stringify(data),
+              },
+              (err, data) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log(data);
+                }
+              },
+            );
+          })
+          .on('error', (e) => {
+            throw new Error(`Parsing error: ${e.message}`);
+          })
+          .on('end', async () => {
+            const source = `${AWS_UPLOAD_BUCKET}/${key}`;
+            const dest = key.replace(AWS_UPLOAD_BUCKET_CATALOG, AWS_TARGET_BUCKET_CATALOG);
 
-        S3
-            .getObject(objectParams)
-            .createReadStream()
-            .pipe(csvParser())
-            .on('data', (data) => {
-              console.log(JSON.stringify(data));
-            })
-            .on('error', (e) => {
-              throw new Error(`Parsing error: ${e.message}`);
-            })
-            .on('end', async () => {
-              const source = `${AWS_UPLOAD_BUCKET}/${key}`;
-              const dest = key.replace(AWS_UPLOAD_BUCKET_CATALOG, AWS_TARGET_BUCKET_CATALOG);
+            await S3.copyObject({
+              Bucket: AWS_UPLOAD_BUCKET,
+              CopySource: source,
+              Key: dest,
+            }).promise();
 
-              await S3.copyObject({
-                Bucket: AWS_UPLOAD_BUCKET,
-                CopySource: source,
-                Key: dest,
-              }).promise();
+            console.log(`File -- ${source} -- copied to ${dest}.`);
 
-              console.log(`File -- ${source} -- copied to ${dest}.`);
+            await S3.deleteObject({
+              Bucket: AWS_UPLOAD_BUCKET,
+              Key: key,
+            }).promise();
 
-              await S3.deleteObject({
-                Bucket: AWS_UPLOAD_BUCKET,
-                Key: key,
-              }).promise();
+            console.log(`File -- ${source} -- deleted.`);
 
-              console.log(`File -- ${source} -- deleted.`);
-
-              resolve('Done');
-            });
+            resolve('Done');
+          });
       });
     });
 
