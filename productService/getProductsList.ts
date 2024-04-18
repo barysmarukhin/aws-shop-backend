@@ -6,7 +6,7 @@ import { ApiError } from '../shared/errors';
 export const handler = async (event: APIGatewayEvent) => {
   try {
     logger('getProductsList', event);
-    const products =  await ProductsService.getAll();
+    const products = await ProductsService.getAll();
 
     return {
       statusCode: 200,
@@ -16,7 +16,7 @@ export const handler = async (event: APIGatewayEvent) => {
       },
     };
   } catch (e) {
-    const { statusCode, name: message } = e as ApiError ;
+    const { statusCode, name: message } = e as ApiError;
 
     return {
       statusCode,
