@@ -64,8 +64,22 @@ resources:
         Protocol: email
         TopicArn:
           Ref: createProductTopic
+    basicAuthorizerRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: "basicAuthorizer"
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 
 functions:
+  basicAuthorizer:
+    handler: authorizationService/authorizer.handler
   getProductsList:
     handler: productService/getProductsList.handler
     events:
@@ -93,6 +107,7 @@ functions:
       - httpApi:
           path: /import
           method: GET
+          authorizer: basicAuthorizer
   importFileParser:
     handler: importService/importFileParser.handler
     events:
