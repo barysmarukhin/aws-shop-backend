@@ -1,6 +1,18 @@
-import { APIGatewayEvent, SQSEvent } from 'aws-lambda';
+import {
+  APIGatewayAuthorizerEvent,
+  APIGatewayEvent,
+  APIGatewayRequestAuthorizerEventV2,
+  SQSEvent,
+} from 'aws-lambda';
 
-const logger = (handler: string, event: APIGatewayEvent | SQSEvent) => {
+const logger = (
+  handler: string,
+  event:
+    | APIGatewayEvent
+    | SQSEvent
+    | APIGatewayAuthorizerEvent
+    | APIGatewayRequestAuthorizerEventV2,
+) => {
   if ((event as SQSEvent).Records) {
     const { Records: sqsRecords } = event as SQSEvent;
     console.log(
@@ -12,7 +24,7 @@ const logger = (handler: string, event: APIGatewayEvent | SQSEvent) => {
     return;
   }
 
-  const { httpMethod, path, pathParameters, queryStringParameters, body } =
+  const { httpMethod, path, pathParameters, queryStringParameters, headers, body } =
     event as APIGatewayEvent;
 
   console.log(
@@ -23,6 +35,7 @@ const logger = (handler: string, event: APIGatewayEvent | SQSEvent) => {
       pathParameters,
       queryStringParameters,
       body,
+      headers,
     }),
   );
 };
