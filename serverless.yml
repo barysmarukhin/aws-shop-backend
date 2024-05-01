@@ -12,7 +12,7 @@ useDotenv: true
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-east-1
+  region: ${env:AWS_REGION}
   profile: ${env:AWS_PROFILE}
   environment:
     DB_USER: ${env:DB_USER}
@@ -23,6 +23,8 @@ provider:
     AWS_UPLOAD_BUCKET: ${env:AWS_UPLOAD_BUCKET}
     AWS_UPLOAD_BUCKET_CATALOG: ${env:AWS_UPLOAD_BUCKET_CATALOG}
     AWS_TARGET_BUCKET_CATALOG: ${env:AWS_TARGET_BUCKET_CATALOG}
+    AUTH_USERNAME: ${env:AUTH_USERNAME}
+    AUTH_PASSWORD: ${env:AUTH_PASSWORD}
     SQS_QUEUE:
       Ref: catalogItemsQueue
     SNS_ARN:
@@ -30,6 +32,13 @@ provider:
 
   httpApi:
     cors: true
+    authorizers:
+      basicAuthorizer:
+        type: request
+        functionName: basicAuthorizer
+        resultTtlInSeconds: 300
+        identitySource:
+          - $request.header.Authorization
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -64,18 +73,6 @@ resources:
         Protocol: email
         TopicArn:
           Ref: createProductTopic
-    basicAuthorizerRole:
-      Type: AWS::IAM::Role
-      Properties:
-        RoleName: "basicAuthorizer"
-        AssumeRolePolicyDocument:
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "sts:AssumeRole"
-        ManagedPolicyArns:
-          - "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
-          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 
 functions:
   basicAuthorizer:
@@ -107,7 +104,8 @@ functions:
       - httpApi:
           path: /import
           method: GET
-          authorizer: basicAuthorizer
+          authorizer:
+            name: basicAuthorizer
   importFileParser:
     handler: importService/importFileParser.handler
     events:
